@@ -160,6 +160,52 @@ body {
   font-size: 13px;
 }
 
+/* ── Debug panel ── */
+.debug-panel {
+  background: rgba(99,102,241,0.08);
+  border-bottom: 1px solid rgba(99,102,241,0.25);
+  padding: 12px 24px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.debug-title {
+  font-weight: 600;
+  color: var(--accent-hover);
+  margin-bottom: 2px;
+}
+
+.debug-file {
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.debug-headers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.debug-headers code {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #c4b5fd;
+}
+
+.debug-hint {
+  color: #fde68a;
+  font-size: 11px;
+}
+
 /* ── Drag overlay ── */
 .drop-overlay {
   position: fixed;

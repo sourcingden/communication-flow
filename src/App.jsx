@@ -35,15 +35,26 @@ export default function App() {
   });
   const [showSettings, setShowSettings] = useState(false);
   const [error, setError] = useState(null);
+  const [debugInfo, setDebugInfo] = useState(null);
   const [dragOver, setDragOver] = useState(false);
 
   const processFiles = useCallback(async (files) => {
     setError(null);
+    setDebugInfo(null);
     try {
       const parsed = await Promise.all(Array.from(files).map(parseCSV));
       const merged = mergeData(parsed);
       if (merged.length === 0) {
-        setError('Не вдалося розпізнати вакансії у файлі. Перевірте формат CSV.');
+        // Show debug info to help user understand what was detected
+        const info = parsed.map(p => ({
+          filename: p.filename,
+          detectedType: p.type,
+          headers: p.fields,
+          rowCount: p.data.length,
+          firstRow: p.data[0] || {},
+        }));
+        setDebugInfo(info);
+        setError('Не вдалося розпізнати вакансії у файлі. Дивись деталі нижче.');
         return;
       }
       setVacancies(withFlags(merged));
@@ -99,6 +110,29 @@ export default function App() {
 
       {error && (
         <div className="error-bar">⚠ {error}</div>
+      )}
+
+      {debugInfo && (
+        <div className="debug-panel">
+          <div className="debug-title">🔍 Що парсер побачив у файлі:</div>
+          {debugInfo.map((d, i) => (
+            <div key={i} className="debug-file">
+              <strong>{d.filename}</strong>
+              {' · '}тип: <code>{d.detectedType}</code>
+              {' · '}{d.rowCount} рядків
+              <div className="debug-headers">
+                Заголовки: {d.headers.length > 0
+                  ? d.headers.map(h => <code key={h}>{h}</code>)
+                  : <em>не знайдено</em>}
+              </div>
+              {d.headers.length > 0 && (
+                <div className="debug-hint">
+                  💡 Надішли ці заголовки в чат — виправимо парсер під твій формат.
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       )}
 
       {dragOver && (
